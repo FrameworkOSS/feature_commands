@@ -1,7 +1,7 @@
 github.com/FrameworkOSS/event v0.0.0-20260130033434-704ddf54a86a h1:NeK3We2878ZMcmzParVuZWtWmpLpn/7f9nSsN/NBS1U=
 github.com/FrameworkOSS/event v0.0.0-20260130033434-704ddf54a86a/go.mod h1:yogiglg6d77pycpQUL9sABR++TD0wia1FESzfNNZafM=
-github.com/FrameworkOSS/feature v0.0.0-20260130032700-b0cbcf28a71e h1:DcnCyD5SUeham9FvaU0jZRPJJPOl/wqAB0YW4fRXxP0=
-github.com/FrameworkOSS/feature v0.0.0-20260130032700-b0cbcf28a71e/go.mod h1:70L/dtXxpJhGhZXCFhyL1pRP7VY/sJcxBq3NN+Y0Dbc=
+github.com/FrameworkOSS/feature v0.0.0-20260130033821-6f9efae09b73 h1:4TNqxQ3Zmqbe+Otuu/GDpxB7CTDbsx1B995HsGxNkTE=
+github.com/FrameworkOSS/feature v0.0.0-20260130033821-6f9efae09b73/go.mod h1:goOCFqIMVUMl54OsnO1libUKO50D0hMd7c8sin8RwyU=
 github.com/FrameworkOSS/feature_wires v0.0.0-20260130030430-bb17c84ca0c6 h1:HJAAoFELQ90GQXLTMz9Ff4mqqThdvp87MCRGVafLw1E=
 github.com/FrameworkOSS/feature_wires v0.0.0-20260130030430-bb17c84ca0c6/go.mod h1:R5iHWSSWCc9KZJsDThDOnIcpMdI5smR+GPKsEqq/S4I=
 github.com/FrameworkOSS/portal v0.0.0-20260130032744-63bf40947be4 h1:Orp6xQLuXfjM0u2/5Qr2aWuQrVZHo891rSntoMRPjkE=

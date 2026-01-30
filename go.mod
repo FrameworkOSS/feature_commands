@@ -3,11 +3,14 @@ module github.com/FrameworkOSS/feature_commands
 go 1.25.4
 
 require (
-	github.com/FrameworkOSS/event v0.0.0-20260130025636-4bd18cbcf4e7
-	github.com/FrameworkOSS/feature v0.0.0-20260130024906-7a5b594a1852
-	github.com/FrameworkOSS/feature_wires v0.0.0-20260130024520-038048c88f6d
-	github.com/FrameworkOSS/portal v0.0.0-20260130024933-862bbe3a3b0f
+	github.com/FrameworkOSS/event v0.0.0-20260130033434-704ddf54a86a
+	github.com/FrameworkOSS/feature v0.0.0-20260130032700-b0cbcf28a71e
+	github.com/FrameworkOSS/portal v0.0.0-20260130032744-63bf40947be4
+	github.com/FrameworkOSS/wire v0.0.0-20260130033327-5e2cbf86a333
 	github.com/JoshuaDoes/crunchio v0.0.4
 )
 
-require github.com/superwhiskers/crunch/v3 v3.5.7 // indirect
+require (
+	github.com/FrameworkOSS/feature_wires v0.0.0-20260130030430-bb17c84ca0c6 // indirect
+	github.com/superwhiskers/crunch/v3 v3.5.7 // indirect
+)

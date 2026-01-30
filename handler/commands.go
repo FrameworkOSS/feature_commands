@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/FrameworkOSS/feature"
-	"github.com/FrameworkOSS/feature_wires/wire"
+	"github.com/FrameworkOSS/wire"
 )
 
 type CommandWrapper struct {

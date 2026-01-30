@@ -25,7 +25,7 @@ func (c *Commands) error(sourceFeatureID string, errs ...error) {
 func (c *Commands) handler() (ech *handler.EventCommandHandler) {
 	ech = handler.NewEventCommandHandler()
 	ech.GetEventHandler().
-		Handle(c.handleEventReady, "ready")
+		Handle(c.handleEventReady, event.EVENT_READY)
 	ech.GetCommandHandler().
 		Handle(c.handleCommandDefault).
 		Handle(c.handleCommandExit, cmdExit).

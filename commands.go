@@ -9,6 +9,7 @@ import (
 	"github.com/FrameworkOSS/event"
 	"github.com/FrameworkOSS/feature"
 	"github.com/FrameworkOSS/feature_commands/handler"
+	"github.com/FrameworkOSS/feature_commands/metadata"
 	"github.com/FrameworkOSS/portal"
 )
 
@@ -31,27 +32,27 @@ func NewCommands(p *portal.Portal) (c *Commands) {
 }
 
 func (c *Commands) API() int {
-	return 0
+	return metadata.API
 }
 
 func (c *Commands) ID() string {
-	return "commands"
+	return metadata.ID
 }
 
 func (c *Commands) Name() string {
-	return "Commands"
+	return metadata.Name
 }
 
 func (c *Commands) Authors() []string {
-	return []string{"JoshuaDoes"}
+	return strings.Split(metadata.Authors, ",")
 }
 
 func (c *Commands) Description() string {
-	return "Provides a call and response interface over the event protocol with the mundane concepts of commands, subcommands and their arguments."
+	return metadata.Description
 }
 
 func (c *Commands) Version() string {
-	return "v0.0.1"
+	return metadata.Version
 }
 
 func (c *Commands) Open() error {
@@ -60,7 +61,7 @@ func (c *Commands) Open() error {
 			c.send(handler.NewEventFeatureAdd(c.p.ID(), c.p.Feature(fs[i])))
 		}
 	}*/
-	if err := c.BatchCommandAdd(c.p.ID(), portalCmds...); err != nil {
+	if err := c.BatchCommandAdd(c.p.ID(), metadata.Commands...); err != nil {
 		return err
 	}
 	c.send(event.NewEventReady(c.ID(), true))
@@ -84,10 +85,10 @@ func (c *Commands) Input(req *event.Event) error {
 
 func (c *Commands) Output() (resp *event.Event, err error) {
 	if len(c.resps) > 0 {
-		c.LockKey(KEY_RESPONSE)
+		c.LockKey(metadata.KEY_RESPONSE)
 		resp = c.resps[0]
 		c.resps = c.resps[1:]
-		c.UnlockKey(KEY_RESPONSE)
+		c.UnlockKey(metadata.KEY_RESPONSE)
 	}
 	return
 }
@@ -101,9 +102,9 @@ func (c *Commands) respond(ctx, resp *event.Event) error {
 		if ctx != nil {
 			resp.SetChannel(ctx.GetChannel()).SetParticipants(ctx.GetParticipants()...).AddParticipants(ctx.GetProducer())
 		}
-		c.LockKey(KEY_RESPONSE)
+		c.LockKey(metadata.KEY_RESPONSE)
 		c.resps = append(c.resps, resp)
-		c.UnlockKey(KEY_RESPONSE)
+		c.UnlockKey(metadata.KEY_RESPONSE)
 	}
 	return nil
 }
@@ -243,20 +244,20 @@ func (c *Commands) Command(commandID string) (cmd *handler.Command) {
 }
 
 func (c *Commands) getCommand(commandID string) *handler.CommandWrapper {
-	c.LockKey(KEY_COMMANDS)
+	c.LockKey(metadata.KEY_COMMANDS)
 	w := c.commands[commandID]
-	c.UnlockKey(KEY_COMMANDS)
+	c.UnlockKey(metadata.KEY_COMMANDS)
 
 	return w
 }
 
 func (c *Commands) Commands() []string {
-	c.LockKey(KEY_COMMANDS)
+	c.LockKey(metadata.KEY_COMMANDS)
 	commands := make([]string, 0)
 	for k := range c.commands {
 		commands = append(commands, k)
 	}
-	c.UnlockKey(KEY_COMMANDS)
+	c.UnlockKey(metadata.KEY_COMMANDS)
 
 	sort.Strings(commands)
 
@@ -271,7 +272,7 @@ func (c *Commands) CommandAdd(featureID string, cmd *handler.Command) error {
 	}
 
 	if commandID := cmd.GetID(); c.Command(commandID) != nil {
-		for _, cmd := range portalCmds {
+		for _, cmd := range metadata.Commands {
 			if commandID == cmd.GetID() {
 				return nil //Silently ignore attempts to replace a portal command.
 			}
@@ -289,9 +290,9 @@ func (c *Commands) CommandAdd(featureID string, cmd *handler.Command) error {
 		return err
 	}
 
-	c.LockKey(KEY_COMMANDS)
+	c.LockKey(metadata.KEY_COMMANDS)
 	c.commands[cmd.GetID()] = nc
-	c.UnlockKey(KEY_COMMANDS)
+	c.UnlockKey(metadata.KEY_COMMANDS)
 
 	c.send(handler.NewEventCommandAdd(featureID, cmd))
 
@@ -305,9 +306,9 @@ func (c *Commands) CommandRemove(callerFeatureID, commandID string) error {
 
 	c.p.Log("CommandRemove(command = %s)", commandID)
 
-	c.LockKey(KEY_COMMANDS)
+	c.LockKey(metadata.KEY_COMMANDS)
 	delete(c.commands, commandID)
-	c.UnlockKey(KEY_COMMANDS)
+	c.UnlockKey(metadata.KEY_COMMANDS)
 
 	c.send(handler.NewEventCommandRemove(callerFeatureID, commandID))
 

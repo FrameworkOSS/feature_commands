@@ -7,6 +7,7 @@ import (
 	"github.com/FrameworkOSS/event"
 	"github.com/FrameworkOSS/feature"
 	"github.com/FrameworkOSS/feature_commands/handler"
+	"github.com/FrameworkOSS/feature_commands/metadata"
 	"github.com/FrameworkOSS/portal"
 )
 
@@ -28,17 +29,17 @@ func (c *Commands) handler() (ech *handler.EventCommandHandler) {
 		Handle(c.handleEventReady, event.EVENT_READY)
 	ech.GetCommandHandler().
 		Handle(c.handleCommandDefault).
-		Handle(c.handleCommandExit, cmdExit).
-		Handle(c.handleCommandChannelAdd, cmdChannelAdd).
-		Handle(c.handleCommandChannelRemove, cmdChannelRemove).
-		Handle(c.handleCommandCommandList, cmdCommands).
-		Handle(c.handleCommandCommandAdd, cmdCommandAdd).
-		Handle(c.handleCommandCommandRemove, cmdCommandRemove).
-		Handle(c.handleCommandFeatureList, cmdFeatures).
-		Handle(c.handleCommandFeatureAdd, cmdFeatureAdd).
-		Handle(c.handleCommandFeatureRemove, cmdFeatureRemove).
-		Handle(c.handleCommandFeatureOpen, cmdFeatureOpen).
-		Handle(c.handleCommandFeatureClose, cmdFeatureClose)
+		Handle(c.handleCommandExit, metadata.CmdExit).
+		Handle(c.handleCommandChannelAdd, metadata.CmdChannelAdd).
+		Handle(c.handleCommandChannelRemove, metadata.CmdChannelRemove).
+		Handle(c.handleCommandCommandList, metadata.CmdCommands).
+		Handle(c.handleCommandCommandAdd, metadata.CmdCommandAdd).
+		Handle(c.handleCommandCommandRemove, metadata.CmdCommandRemove).
+		Handle(c.handleCommandFeatureList, metadata.CmdFeatures).
+		Handle(c.handleCommandFeatureAdd, metadata.CmdFeatureAdd).
+		Handle(c.handleCommandFeatureRemove, metadata.CmdFeatureRemove).
+		Handle(c.handleCommandFeatureOpen, metadata.CmdFeatureOpen).
+		Handle(c.handleCommandFeatureClose, metadata.CmdFeatureClose)
 	return
 }
 

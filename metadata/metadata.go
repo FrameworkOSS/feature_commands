@@ -1,6 +1,15 @@
-package commands
+package metadata
 
 import "github.com/FrameworkOSS/feature_commands/handler"
+
+const (
+	API         = 0
+	ID          = "commands"
+	Name        = "Commands"
+	Authors     = "JoshuaDoes"
+	Description = "Provides a call and response interface over the event protocol with the mundane concepts of commands, subcommands and their arguments."
+	Version     = "v0.0.1"
+)
 
 const (
 	KEY_COMMANDS = "\x01"
@@ -9,19 +18,19 @@ const (
 
 /* --- PORTAL COMMANDS --- */
 var (
-	portalCmds = []*handler.Command{
-		cmdExit,
+	Commands = []*handler.Command{
+		CmdExit,
 
 		//Order preference: list, add, remove, open, close, read, write
-		cmdChannelAdd, cmdChannelRemove,
-		cmdCommands, cmdCommandAdd, cmdCommandRemove,
-		cmdFeatures, cmdFeatureAdd, cmdFeatureRemove, cmdFeatureOpen, cmdFeatureClose,
+		CmdChannelAdd, CmdChannelRemove,
+		CmdCommands, CmdCommandAdd, CmdCommandRemove,
+		CmdFeatures, CmdFeatureAdd, CmdFeatureRemove, CmdFeatureOpen, CmdFeatureClose,
 	}
 )
 
 /* --- COMMANDS --- */
 var (
-	cmdExit = handler.NewCommand().
+	CmdExit = handler.NewCommand().
 		SetID("exit").
 		SetName("Exit").
 		SetAbout("Tells the portal to start performing close routines.").
@@ -37,7 +46,7 @@ var (
 			SetType(handler.CommandArgTypeNumber).
 			SetRequiresValue(true),
 		)
-	cmdChannelAdd = handler.NewCommand().
+	CmdChannelAdd = handler.NewCommand().
 			SetID("channel_add").
 			SetName("Channel Add").
 			SetAbout("Adds the caller to a channel.").
@@ -56,7 +65,7 @@ var (
 				SetRequiresValue(true).
 				SetRepeatable(true),
 		)
-	cmdChannelRemove = handler.NewCommand().
+	CmdChannelRemove = handler.NewCommand().
 				SetID("channel_remove").
 				SetName("Channel Remove").
 				SetAbout("Removes the caller from a channel.").
@@ -78,17 +87,17 @@ var (
 			SetRequiresValue(true).
 			SetRepeatable(true),
 		)
-	cmdCommands = handler.NewCommand().
+	CmdCommands = handler.NewCommand().
 			SetID("commands").
 			SetName("Commands").
 			SetAbout("Responds with a list of commands registered to the portal.").
 			SetUsage("Optionally provide a format to use for output.").
 			SetAliases("cs", "cmds", "coms", "comms").
 			SetRequiresPreprocessing(true).
-			SetArgument(cmdArgFormat).
-			SetArgument(cmdArgExclude).
-			SetArgument(cmdArgInclude)
-	cmdCommandAdd = handler.NewCommand().
+			SetArgument(CmdArgFormat).
+			SetArgument(CmdArgExclude).
+			SetArgument(CmdArgInclude)
+	CmdCommandAdd = handler.NewCommand().
 			SetID("command_add").
 			SetName("Command Add").
 			SetAbout("Adds a command to the portal.").
@@ -107,7 +116,7 @@ var (
 				SetRequiresValue(true).
 				SetRepeatable(true),
 		)
-	cmdCommandRemove = handler.NewCommand().
+	CmdCommandRemove = handler.NewCommand().
 				SetID("command_remove").
 				SetName("Command Remove").
 				SetAbout("Removes the command from the portal.").
@@ -129,17 +138,17 @@ var (
 			SetRequiresValue(true).
 			SetRepeatable(true),
 		)
-	cmdFeatures = handler.NewCommand().
+	CmdFeatures = handler.NewCommand().
 			SetID("features").
 			SetName("Features").
 			SetAbout("Responds with a list of features registered to the portal.").
 			SetUsage("Optionally provide a format to use for output.").
 			SetAliases("fs", "flist", "feats").
 			SetRequiresPreprocessing(true).
-			SetArgument(cmdArgFormat).
-			SetArgument(cmdArgExclude).
-			SetArgument(cmdArgInclude)
-	cmdFeatureAdd = handler.NewCommand().
+			SetArgument(CmdArgFormat).
+			SetArgument(CmdArgExclude).
+			SetArgument(CmdArgInclude)
+	CmdFeatureAdd = handler.NewCommand().
 			SetID("feature_add").
 			SetName("Feature Add").
 			SetAbout("Binds a feature to the caller.").
@@ -158,7 +167,7 @@ var (
 				SetRequiresValue(true).
 				SetRepeatable(true),
 		)
-	cmdFeatureRemove = handler.NewCommand().
+	CmdFeatureRemove = handler.NewCommand().
 				SetID("feature_remove").
 				SetName("Feature Remove").
 				SetAbout("Removes a feature from the portal.").
@@ -180,7 +189,7 @@ var (
 			SetRequiresValue(true).
 			SetRepeatable(true),
 		)
-	cmdFeatureOpen = handler.NewCommand().
+	CmdFeatureOpen = handler.NewCommand().
 			SetID("feature_open").
 			SetName("Feature Open").
 			SetAbout("Opens a feature into the portal.").
@@ -201,7 +210,7 @@ var (
 			SetRequiresValue(true).
 			SetRepeatable(true),
 		)
-	cmdFeatureClose = handler.NewCommand().
+	CmdFeatureClose = handler.NewCommand().
 			SetID("feature_close").
 			SetName("Feature Close").
 			SetAbout("Closes a feature from the portal.").
@@ -226,7 +235,7 @@ var (
 
 /* --- SHARED COMMAND ARGUMENTS --- */
 var (
-	cmdArgFormat = handler.NewCommandArg().
+	CmdArgFormat = handler.NewCommandArg().
 			SetID("format").
 			SetName("format").
 			SetAbout("The format to describe the command list using.").
@@ -234,7 +243,7 @@ var (
 			SetAliases("f", "form", "style", "type").
 			SetType(handler.CommandArgTypeString).
 			SetRequiresValue(true)
-	cmdArgExclude = handler.NewCommandArg().
+	CmdArgExclude = handler.NewCommandArg().
 			SetID("exclude").
 			SetName("exclude list").
 			SetAbout("The entries to exclude from the listing.").
@@ -243,7 +252,7 @@ var (
 			SetType(handler.CommandArgTypeString).
 			SetRequiresValue(true).
 			SetRepeatable(true)
-	cmdArgInclude = handler.NewCommandArg().
+	CmdArgInclude = handler.NewCommandArg().
 			SetID("include").
 			SetName("include list").
 			SetAbout("The entries to include in the listing.").

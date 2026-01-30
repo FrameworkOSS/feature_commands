@@ -1,9 +1,12 @@
 package handler
 
-import "github.com/FrameworkOSS/portal/portal"
+import (
+	"github.com/FrameworkOSS/event"
+	"github.com/FrameworkOSS/feature"
+)
 
-func NewEventCall(feature, command string, args ...*CommandArg) (e *portal.Event) {
-	e = portal.NewEvent().
+func NewEventCall(feature, command string, args ...*CommandArg) (e *event.Event) {
+	e = event.NewEvent().
 		SetID("call").
 		SetProducer(feature)
 
@@ -20,7 +23,7 @@ func NewEventCall(feature, command string, args ...*CommandArg) (e *portal.Event
 	return
 }
 
-func NewEventCommandAdd(feature string, command ...*Command) (e *portal.Event) {
+func NewEventCommandAdd(feature string, command ...*Command) (e *event.Event) {
 	args := make([]*CommandArg, len(command))
 	for i := 0; i < len(args); i++ {
 		args[i] = NewCommandArg().SetID("command").SetValue(command[i].Bytes())
@@ -32,7 +35,7 @@ func NewEventCommandAdd(feature string, command ...*Command) (e *portal.Event) {
 	return
 }
 
-func NewEventCommandRemove(feature string, commandID ...string) (e *portal.Event) {
+func NewEventCommandRemove(feature string, commandID ...string) (e *event.Event) {
 	args := make([]*CommandArg, len(commandID))
 	for i := 0; i < len(args); i++ {
 		args[i] = NewCommandArg().SetID("command").SetValueString(commandID[i])
@@ -41,7 +44,7 @@ func NewEventCommandRemove(feature string, commandID ...string) (e *portal.Event
 	return
 }
 
-func NewEventChannelAdd(feature string, channel ...string) (e *portal.Event) {
+func NewEventChannelAdd(feature string, channel ...string) (e *event.Event) {
 	args := make([]*CommandArg, len(channel))
 	for i := 0; i < len(args); i++ {
 		args[i] = NewCommandArg().SetID("channel").SetValueString(channel[i])
@@ -50,7 +53,7 @@ func NewEventChannelAdd(feature string, channel ...string) (e *portal.Event) {
 	return
 }
 
-func NewEventChannelRemove(feature string, channel ...string) (e *portal.Event) {
+func NewEventChannelRemove(feature string, channel ...string) (e *event.Event) {
 	args := make([]*CommandArg, len(channel))
 	for i := 0; i < len(args); i++ {
 		args[i] = NewCommandArg().SetID("channel").SetValueString(channel[i])
@@ -59,12 +62,12 @@ func NewEventChannelRemove(feature string, channel ...string) (e *portal.Event) 
 	return
 }
 
-func NewEventFeatureAdd(feature string, binding ...portal.Feature) (e *portal.Event) {
+func NewEventFeatureAdd(ft string, binding ...feature.Feature) (e *event.Event) {
 	args := make([]*CommandArg, len(binding))
 	for i := 0; i < len(binding); i++ {
 		binder := binding[i]
 		args[i] = NewCommandArg().SetID("feature").SetValue(
-			portal.NewFeatureBinding(nil).
+			feature.NewFeatureBinding(nil).
 				SetID(binder.ID()).
 				SetName(binder.Name()).
 				SetAuthors(binder.Authors()...).
@@ -72,11 +75,11 @@ func NewEventFeatureAdd(feature string, binding ...portal.Feature) (e *portal.Ev
 				SetVersion(binder.Version()).Bytes(),
 		)
 	}
-	e = NewEventCall(feature, "feature_add", args...)
+	e = NewEventCall(ft, "feature_add", args...)
 	return
 }
 
-func NewEventFeatureRemove(feature string, binding ...string) (e *portal.Event) {
+func NewEventFeatureRemove(feature string, binding ...string) (e *event.Event) {
 	args := make([]*CommandArg, len(binding))
 	for i := 0; i < len(binding); i++ {
 		args[i] = NewCommandArg().SetID("feature").SetValueString(binding[i])
@@ -85,7 +88,7 @@ func NewEventFeatureRemove(feature string, binding ...string) (e *portal.Event) 
 	return
 }
 
-func NewEventFeatureOpen(feature string, binding ...string) (e *portal.Event) {
+func NewEventFeatureOpen(feature string, binding ...string) (e *event.Event) {
 	args := make([]*CommandArg, len(binding))
 	for i := 0; i < len(binding); i++ {
 		args[i] = NewCommandArg().SetID("feature").SetValueString(binding[i])
@@ -94,7 +97,7 @@ func NewEventFeatureOpen(feature string, binding ...string) (e *portal.Event) {
 	return
 }
 
-func NewEventFeatureClose(feature string, binding ...string) (e *portal.Event) {
+func NewEventFeatureClose(feature string, binding ...string) (e *event.Event) {
 	args := make([]*CommandArg, len(binding))
 	for i := 0; i < len(binding); i++ {
 		args[i] = NewCommandArg().SetID("feature").SetValueString(binding[i])
@@ -103,8 +106,8 @@ func NewEventFeatureClose(feature string, binding ...string) (e *portal.Event) {
 	return
 }
 
-func NewEventFeatureCloseRetry(feature string) *portal.Event {
-	return portal.NewEvent().
+func NewEventFeatureCloseRetry(feature string) *event.Event {
+	return event.NewEvent().
 		SetID("retry_close").
 		SetProducer(feature)
 }

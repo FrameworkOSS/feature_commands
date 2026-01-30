@@ -1,15 +1,15 @@
 package handler
 
 import (
-	"github.com/FrameworkOSS/portal/features/wires/wire"
-	"github.com/FrameworkOSS/portal/portal"
+	"github.com/FrameworkOSS/feature"
+	"github.com/FrameworkOSS/feature_wires/wire"
 )
 
 type CommandWrapper struct {
 	// The underlying command transport.
-	Feature portal.Feature //The feature transport which will process this command.
-	Command *Command       //The definition of the command to be processed.
-	Handler func() error   //For native portal commands to mount their handlers.
+	Feature feature.Feature //The feature transport which will process this command.
+	Command *Command        //The definition of the command to be processed.
+	Handler func() error    //For native portal commands to mount their handlers.
 }
 
 // Command is an abstraction over the event transport to provide a structured protocol for features to communicate with.
@@ -25,7 +25,7 @@ type Command struct {
 	subcmds      map[string]*Command //Nestable subcommands to provide structured heirarchy.
 }
 
-func NewCommandWrapper(f portal.Feature, c *Command) (*CommandWrapper, error) {
+func NewCommandWrapper(f feature.Feature, c *Command) (*CommandWrapper, error) {
 	if f == nil {
 		return nil, ErrorFeatureNotFound("")
 	}

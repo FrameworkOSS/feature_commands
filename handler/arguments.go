@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/FrameworkOSS/portal/features/wires/wire"
-	"github.com/FrameworkOSS/portal/portal"
+	"github.com/FrameworkOSS/event"
+	"github.com/FrameworkOSS/feature"
+	"github.com/FrameworkOSS/feature_wires/wire"
 	"github.com/JoshuaDoes/crunchio"
 )
 
@@ -72,7 +73,7 @@ func NewCommandArg() *CommandArg {
 	return arg
 }
 
-func NewFeatureBindingArg(f portal.Feature, arg *CommandArg) (fb *portal.FeatureBinding) {
+func NewFeatureBindingArg(f feature.Feature, arg *CommandArg) (fb *feature.FeatureBinding) {
 	w := wire.NewWire(arg.GetValueBytes())
 	defer w.Close()
 
@@ -82,7 +83,7 @@ func NewFeatureBindingArg(f portal.Feature, arg *CommandArg) (fb *portal.Feature
 	description := w.GetValues(3)
 	version := w.GetValues(4)
 
-	fb = portal.NewFeatureBinding(f).
+	fb = feature.NewFeatureBinding(f).
 		SetID(string(id[0])).
 		SetName(string(name[0])).
 		SetDescription(string(description[0])).
@@ -97,7 +98,7 @@ func NewFeatureBindingArg(f portal.Feature, arg *CommandArg) (fb *portal.Feature
 	return
 }
 
-func NewCommandArgsEvent(e *portal.Event) (string, []*CommandArg, error) {
+func NewCommandArgsEvent(e *event.Event) (string, []*CommandArg, error) {
 	if e == nil {
 		return "", nil, nil
 	}

@@ -1,6 +1,6 @@
 package commands
 
-import "github.com/FrameworkOSS/portal/features/commands/handler"
+import "github.com/FrameworkOSS/feature_commands/handler"
 
 const (
 	KEY_COMMANDS = "\x01"

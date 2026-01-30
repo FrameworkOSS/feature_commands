@@ -6,16 +6,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/FrameworkOSS/portal/features/commands/handler"
-	"github.com/FrameworkOSS/portal/portal"
+	"github.com/FrameworkOSS/event"
+	"github.com/FrameworkOSS/feature"
+	"github.com/FrameworkOSS/feature_commands/handler"
+	"github.com/FrameworkOSS/portal"
 )
 
 type Commands struct {
 	*portal.PortalMutex
 	p         *portal.Portal
 	processor *handler.EventCommandHandler
-	resps     []*portal.Event
-	hello     *portal.Event                      //Reconstructed each time the command list is updated!
+	resps     []*event.Event
+	hello     *event.Event                       //Reconstructed each time the command list is updated!
 	commands  map[string]*handler.CommandWrapper //command:Command (with a pointer to its Feature)
 }
 
@@ -61,7 +63,7 @@ func (c *Commands) Open() error {
 	if err := c.BatchCommandAdd(c.p.ID(), portalCmds...); err != nil {
 		return err
 	}
-	c.send(portal.NewEventReady(c.ID(), true))
+	c.send(event.NewEventReady(c.ID(), true))
 	return nil
 }
 
@@ -76,11 +78,11 @@ func (c *Commands) Close() (errs []error, retry bool) {
 	return
 }
 
-func (c *Commands) Input(req *portal.Event) error {
+func (c *Commands) Input(req *event.Event) error {
 	return c.processor.Process(req)
 }
 
-func (c *Commands) Output() (resp *portal.Event, err error) {
+func (c *Commands) Output() (resp *event.Event, err error) {
 	if len(c.resps) > 0 {
 		c.LockKey(KEY_RESPONSE)
 		resp = c.resps[0]
@@ -90,11 +92,11 @@ func (c *Commands) Output() (resp *portal.Event, err error) {
 	return
 }
 
-func (c *Commands) send(req *portal.Event) error {
+func (c *Commands) send(req *event.Event) error {
 	return c.respond(nil, req)
 }
 
-func (c *Commands) respond(ctx, resp *portal.Event) error {
+func (c *Commands) respond(ctx, resp *event.Event) error {
 	if resp != nil {
 		if ctx != nil {
 			resp.SetChannel(ctx.GetChannel()).SetParticipants(ctx.GetParticipants()...).AddParticipants(ctx.GetProducer())
@@ -106,7 +108,7 @@ func (c *Commands) respond(ctx, resp *portal.Event) error {
 	return nil
 }
 
-func (c *Commands) NewCommandLineEvent(feature string, op ...string) (*portal.Event, error) {
+func (c *Commands) NewCommandLineEvent(feature string, op ...string) (*event.Event, error) {
 	if len(op) == 0 {
 		return nil, handler.ErrorCommandNotFound("")
 	}
@@ -341,7 +343,7 @@ func Find(p *portal.Portal) (c *Commands) {
 		if found, ok := f.(*Commands); ok {
 			c = found
 		}
-		if f, ok := f.(*portal.FeatureBinding); ok {
+		if f, ok := f.(*feature.FeatureBinding); ok {
 			if bind := f.GetBinding(); bind != nil {
 				if f, ok := bind.(*Commands); ok {
 					c = f

@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/FrameworkOSS/portal/features/commands/handler"
-	"github.com/FrameworkOSS/portal/portal"
+	"github.com/FrameworkOSS/event"
+	"github.com/FrameworkOSS/feature"
+	"github.com/FrameworkOSS/feature_commands/handler"
+	"github.com/FrameworkOSS/portal"
 )
 
 func (c *Commands) error(sourceFeatureID string, errs ...error) {
@@ -15,7 +17,7 @@ func (c *Commands) error(sourceFeatureID string, errs ...error) {
 			if err == portal.ErrorInternallyHandled {
 				continue
 			}
-			c.respond(nil, portal.NewEventError(sourceFeatureID, err))
+			c.respond(nil, event.NewEventError(sourceFeatureID, err))
 		}
 	}
 }
@@ -41,7 +43,7 @@ func (c *Commands) handler() (ech *handler.EventCommandHandler) {
 }
 
 // handleEventReady says hello to new features with the stock list of commands.
-func (c *Commands) handleEventReady(e *portal.Event) error {
+func (c *Commands) handleEventReady(e *event.Event) error {
 	//c.respond(e, handler.NewEventCommandAdd(c.p.ID(), portalCmds...))
 	return nil
 }
@@ -49,14 +51,14 @@ func (c *Commands) handleEventReady(e *portal.Event) error {
 /* --- HANDLERS: COMMANDS --- */
 
 // handleCommandDefault processes commands not native to this framework.
-func (c *Commands) handleCommandDefault(cmd *handler.Command, e *portal.Event) error {
-	feature := c.p.Feature(e.GetProducer())
-	if feature == nil {
+func (c *Commands) handleCommandDefault(cmd *handler.Command, e *event.Event) error {
+	ft := c.p.Feature(e.GetProducer())
+	if ft == nil {
 		//Create a feature binding when the producer is not found.
-		if err := c.p.FeatureAdd(portal.NewFeatureBinding(c.p).SetID(e.GetProducer())); err != nil {
+		if err := c.p.FeatureAdd(feature.NewFeatureBinding(c.p).SetID(e.GetProducer())); err != nil {
 			return err
 		}
-		feature = c.p.Feature(e.GetProducer())
+		ft = c.p.Feature(e.GetProducer())
 		//return fmt.Errorf("call to portal:%s: %v", c.ID(), ErrorFeatureNotFound(e.GetProducer()))
 	}
 
@@ -156,7 +158,7 @@ func (c *Commands) handleCommandDefault(cmd *handler.Command, e *portal.Event) e
 	return nil
 }
 
-func (c *Commands) handleCommandExit(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandExit(cmd *handler.Command, e *event.Event) error {
 	exitCode := 0
 	if arg := cmd.GetArgument("code"); arg != nil {
 		exitCode = arg.GetValueNumber()
@@ -165,7 +167,7 @@ func (c *Commands) handleCommandExit(cmd *handler.Command, e *portal.Event) erro
 	return nil
 }
 
-func (c *Commands) handleCommandChannelAdd(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandChannelAdd(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("channel")
 	}
@@ -179,7 +181,7 @@ func (c *Commands) handleCommandChannelAdd(cmd *handler.Command, e *portal.Event
 	})
 }
 
-func (c *Commands) handleCommandChannelRemove(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandChannelRemove(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("channel")
 	}
@@ -193,7 +195,7 @@ func (c *Commands) handleCommandChannelRemove(cmd *handler.Command, e *portal.Ev
 	})
 }
 
-func (c *Commands) handleCommandCommandList(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandCommandList(cmd *handler.Command, e *event.Event) error {
 	output := "pretty"
 	if format := cmd.GetArgument("format"); format != nil {
 		f := format.GetValueStringToLower()
@@ -210,7 +212,7 @@ func (c *Commands) handleCommandCommandList(cmd *handler.Command, e *portal.Even
 		return err
 	}
 
-	r := portal.NewEventResponse(c.ID(), nil)
+	r := event.NewEventResponse(c.ID(), nil)
 
 	//Header
 	switch output {
@@ -305,7 +307,7 @@ func (c *Commands) handleCommandCommandList(cmd *handler.Command, e *portal.Even
 	return c.respond(e, r)
 }
 
-func (c *Commands) handleCommandCommandAdd(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandCommandAdd(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("command")
 	}
@@ -318,7 +320,7 @@ func (c *Commands) handleCommandCommandAdd(cmd *handler.Command, e *portal.Event
 	})
 }
 
-func (c *Commands) handleCommandCommandRemove(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandCommandRemove(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("command")
 	}
@@ -331,7 +333,7 @@ func (c *Commands) handleCommandCommandRemove(cmd *handler.Command, e *portal.Ev
 	})
 }
 
-func (c *Commands) handleCommandFeatureList(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandFeatureList(cmd *handler.Command, e *event.Event) error {
 	output := "pretty"
 	if format := cmd.GetArgument("format"); format != nil {
 		f := format.GetValueStringToLower()
@@ -348,7 +350,7 @@ func (c *Commands) handleCommandFeatureList(cmd *handler.Command, e *portal.Even
 		return err
 	}
 
-	r := portal.NewEventResponse(c.ID(), nil)
+	r := event.NewEventResponse(c.ID(), nil)
 
 	//Header
 	switch output {
@@ -372,7 +374,7 @@ func (c *Commands) handleCommandFeatureList(cmd *handler.Command, e *portal.Even
 		}
 
 		bindingID := ""
-		if binding, ok := f.(*portal.FeatureBinding); ok {
+		if binding, ok := f.(*feature.FeatureBinding); ok {
 			bindingID = binding.GetBinding().ID()
 		}
 
@@ -409,14 +411,14 @@ func (c *Commands) handleCommandFeatureList(cmd *handler.Command, e *portal.Even
 			}
 		case "raw":
 			r.AddOffsetNext()
-			r.AddDataNext(portal.NewFeatureBinding(f).CloneBinding().Bytes())
+			r.AddDataNext(feature.NewFeatureBinding(f).CloneBinding().Bytes())
 		}
 	}
 
 	return c.respond(e, r)
 }
 
-func (c *Commands) handleCommandFeatureAdd(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandFeatureAdd(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("feature")
 	}
@@ -429,7 +431,7 @@ func (c *Commands) handleCommandFeatureAdd(cmd *handler.Command, e *portal.Event
 	})
 }
 
-func (c *Commands) handleCommandFeatureRemove(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandFeatureRemove(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("feature")
 	}
@@ -438,7 +440,7 @@ func (c *Commands) handleCommandFeatureRemove(cmd *handler.Command, e *portal.Ev
 	})
 }
 
-func (c *Commands) handleCommandFeatureOpen(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandFeatureOpen(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("feature")
 	}
@@ -447,7 +449,7 @@ func (c *Commands) handleCommandFeatureOpen(cmd *handler.Command, e *portal.Even
 	})
 }
 
-func (c *Commands) handleCommandFeatureClose(cmd *handler.Command, e *portal.Event) error {
+func (c *Commands) handleCommandFeatureClose(cmd *handler.Command, e *event.Event) error {
 	if len(cmd.GetArguments()) == 0 {
 		return handler.ErrorCommandArgCallField("feature")
 	}

@@ -3,10 +3,10 @@ package handler
 import (
 	"strings"
 
-	"github.com/FrameworkOSS/portal/portal"
+	"github.com/FrameworkOSS/event"
 )
 
-type CommandHandlerMethod func(cmd *Command, e *portal.Event) error
+type CommandHandlerMethod func(cmd *Command, e *event.Event) error
 
 type CommandHandlerWrapper struct {
 	command *Command
@@ -25,7 +25,7 @@ func NewCommandHandler() (ch *CommandHandler) {
 }
 
 // Process executes a matching handler for a command.
-func (ch *CommandHandler) Process(cmd *Command, e *portal.Event) error {
+func (ch *CommandHandler) Process(cmd *Command, e *event.Event) error {
 	op := strings.Split(cmd.GetID(), " ")
 	call := op[0]
 	if handler := ch.GetHandler(call); handler != nil {
@@ -114,23 +114,23 @@ func (ch *CommandHandler) GetHandlersMapClone() map[string]*CommandHandlerWrappe
 
 // EventCommandHandler provides an EventHandler wrapper around a CommandHandler that will proxy incoming call events to it.
 type EventCommandHandler struct {
-	eh *portal.EventHandler
+	eh *event.EventHandler
 	ch *CommandHandler
 }
 
 func NewEventCommandHandler() (ech *EventCommandHandler) {
 	ech = new(EventCommandHandler)
-	ech.eh = portal.NewEventHandler().
+	ech.eh = event.NewEventHandler().
 		Handle(ech.processCall, "call")
 	ech.ch = NewCommandHandler()
 	return
 }
 
-func (ech *EventCommandHandler) Process(e *portal.Event) error {
+func (ech *EventCommandHandler) Process(e *event.Event) error {
 	return ech.eh.Process(e)
 }
 
-func (ech *EventCommandHandler) processCall(e *portal.Event) error {
+func (ech *EventCommandHandler) processCall(e *event.Event) error {
 	call, args, err := NewCommandArgsEvent(e)
 	if err != nil {
 		return err
@@ -139,7 +139,7 @@ func (ech *EventCommandHandler) processCall(e *portal.Event) error {
 	return ech.ch.Process(cmd, e)
 }
 
-func (ech *EventCommandHandler) GetEventHandler() *portal.EventHandler {
+func (ech *EventCommandHandler) GetEventHandler() *event.EventHandler {
 	return ech.eh
 }
 
